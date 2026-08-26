@@ -1,0 +1,776 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>آزمون‌ساز | گروه علوم تجربی آذربایجان شرقی</title>
+<style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        min-height:100vh;
+        display:flex; justify-content:center; align-items:flex-start;
+        padding:25px 15px;
+    }
+    .wrap { max-width:820px; width:100%; }
+    .brand {
+        display:flex; align-items:center; justify-content:center; gap:12px;
+        margin-bottom:18px; text-align:center;
+    }
+    .brand .logo {
+        width:52px; height:52px; border-radius:50%;
+        background: white;
+        display:flex; align-items:center; justify-content:center;
+        font-size:26px; box-shadow:0 6px 18px rgba(233,69,96,.4);
+        flex-shrink:0;
+    }
+    .brand h1 { color:#fff; font-size:22px; }
+    .brand p { color:#cbd5f5; font-size:13px; margin-top:2px; }
+
+    .container {
+        background: rgba(255,255,255,.97);
+        border-radius:26px;
+        padding:30px;
+        box-shadow:0 20px 60px rgba(0,0,0,.5);
+    }
+
+    .steps {
+        display:flex; justify-content:space-between; margin-bottom:28px; gap:6px;
+    }
+    .step-dot {
+        flex:1; text-align:center; padding:10px 4px; border-radius:12px;
+        background:#f1f1f6; color:#888; font-size:12px; font-weight:bold;
+        border:2px solid transparent; transition:.3s;
+    }
+    .step-dot.active { background:linear-gradient(135deg,#e94560,#0f3460); color:#fff; }
+    .step-dot.done { background:#e8f5e9; color:#2e7d32; border-color:#a5d6a7; }
+
+    .panel { display:none; }
+    .panel.active { display:block; }
+
+    h2.panel-title { color:#1a1a2e; font-size:19px; margin-bottom:18px; border-right:5px solid #e94560; padding-right:12px; }
+
+    label.field-label { display:block; font-size:14px; color:#333; font-weight:bold; margin:14px 0 6px; }
+    .hint { font-size:12px; color:#888; margin-top:4px; }
+
+    input[type=text], input[type=number], textarea, select {
+        width:100%; padding:12px 14px; border:2px solid #ddd; border-radius:12px;
+        font-size:15px; background:#f9f9f9; font-family:inherit; text-align:right;
+        transition:.2s;
+    }
+    input:focus, textarea:focus, select:focus {
+        border-color:#e94560; outline:none; background:#fff;
+        box-shadow:0 0 12px rgba(233,69,96,.15);
+    }
+    textarea { resize:vertical; min-height:70px; line-height:1.8; }
+
+    .row2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    @media (max-width:600px){ .row2{ grid-template-columns:1fr; } }
+
+    .toggle-group { display:flex; gap:10px; margin-top:6px; }
+    .toggle-btn {
+        flex:1; padding:12px; text-align:center; border:2px solid #ddd; border-radius:12px;
+        cursor:pointer; font-size:14px; font-weight:bold; color:#555; background:#f9f9f9; transition:.2s;
+    }
+    .toggle-btn.selected { border-color:#e94560; background:linear-gradient(135deg,#fce4ec,#e8eaf6); color:#e94560; }
+
+    .qcard {
+        background:#fafafa; border:1px solid #eee; border-radius:16px; padding:16px; margin-bottom:14px;
+    }
+    .qcard .qtitle { font-weight:bold; color:#0f3460; margin-bottom:8px; font-size:14px; }
+    .qcard .err { color:#e94560; font-size:12.5px; margin-top:6px; display:none; font-weight:bold; }
+
+    .preview-card {
+        background:#fff; border:1px solid #eee; border-radius:16px; padding:18px; margin-bottom:16px;
+        box-shadow:0 4px 14px rgba(0,0,0,.05);
+    }
+    .preview-card .qnum {
+        display:inline-block; background:linear-gradient(135deg,#e94560,#0f3460); color:#fff;
+        padding:4px 14px; border-radius:20px; font-size:12.5px; margin-bottom:10px;
+    }
+    .preview-card .qtext { font-size:16px; font-weight:600; color:#1a1a2e; margin-bottom:14px; line-height:1.7; }
+    .preview-opt {
+        display:flex; align-items:center; gap:10px; padding:10px 14px; border:2px solid #e0e0e0;
+        border-radius:10px; margin-bottom:8px; cursor:pointer; font-size:14.5px; background:#fafafa;
+    }
+    .preview-opt:hover { border-color:#0f3460; }
+    .preview-opt.correct-selected { border-color:#2e7d32; background:#e8f5e9; }
+    .preview-opt input { width:auto; }
+    .score-row { display:flex; align-items:center; gap:10px; margin-top:12px; }
+    .score-row label { font-size:13.5px; color:#555; font-weight:bold; white-space:nowrap; }
+    .score-row input { width:90px; padding:8px 10px; }
+
+    .btn-row { display:flex; justify-content:space-between; margin-top:22px; gap:10px; }
+    .btn {
+        padding:13px 26px; border:none; border-radius:12px; font-size:15px; font-weight:bold;
+        cursor:pointer; transition:.2s; background:linear-gradient(135deg,#e94560,#0f3460); color:#fff;
+    }
+    .btn:hover { transform:translateY(-2px); box-shadow:0 10px 22px rgba(233,69,96,.35); }
+    .btn.secondary { background:#eee; color:#333; }
+    .btn:disabled { opacity:.5; cursor:not-allowed; transform:none; box-shadow:none; }
+
+    .summary-box {
+        background:linear-gradient(135deg,#fce4ec,#e8eaf6); border-radius:14px; padding:16px 18px;
+        margin-bottom:16px; border-right:5px solid #e94560; font-size:14.5px; line-height:2;
+    }
+    .summary-box b { color:#e94560; }
+
+    .warn-total { font-size:13px; margin-top:6px; padding:8px 12px; border-radius:8px; }
+    .warn-total.ok { background:#e8f5e9; color:#2e7d32; }
+    .warn-total.bad { background:#fff3cd; color:#856404; }
+
+    .global-error {
+        background:#fce4ec; color:#e94560; padding:10px 14px; border-radius:10px; font-size:13.5px;
+        font-weight:bold; margin-bottom:14px; display:none;
+    }
+
+    .footer-tag { text-align:center; color:#cbd5f5; font-size:12px; margin-top:16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+    <div class="brand">
+        <div class="logo"><img src="data:image/png;base64,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"/></div>
+        <div>
+            <h1>آزمـــــــون‌ســــــــــاز</h1>
+            <p>کاری از گروه علوم تجربی استان آذربایجان شرقی</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="steps">
+            <div class="step-dot active" id="dot1">۱. مشخصات آزمون</div>
+            <div class="step-dot" id="dot2">۲. ورود سوالات</div>
+            <div class="step-dot" id="dot3">۳. پیش‌نمایش و پاسخ</div>
+            <div class="step-dot" id="dot4">۴. دریافت خروجی</div>
+        </div>
+
+        <div class="global-error" id="globalError"></div>
+
+        <!-- STEP 1 -->
+        <div class="panel active" id="panel1">
+            <h2 class="panel-title">مشخصات کلی آزمون</h2>
+
+            <label class="field-label">موضوع آزمون</label>
+            <input type="text" id="f_topic" placeholder="مثلاً: علوم تجربی پایه هفتم">
+
+            <label class="field-label">شماره / عنوان درس</label>
+            <input type="text" id="f_lesson" placeholder="مثلاً: درس ۲۱ و ۲۲ - تغییرات فیزیکی و شیمیایی">
+
+            <div class="row2">
+                <div>
+                    <label class="field-label">طراح / دبیر</label>
+                    <input type="text" id="f_designer" placeholder="نام و سمت طراح آزمون">
+                </div>
+                <div>
+                    <label class="field-label">نمره کل آزمون</label>
+                    <input type="number" id="f_totalScore" placeholder="مثلاً: ۲۰" min="1" step="0.25">
+                </div>
+            </div>
+
+            <label class="field-label">توضیحات</label>
+            <textarea id="f_desc" placeholder="توضیح کوتاه درباره آزمون، سرفصل‌ها یا راهنمای دانش‌آموز..."></textarea>
+
+            <div class="row2">
+                <div>
+                    <label class="field-label">تعداد سوالات</label>
+                    <input type="number" id="f_count" placeholder="مثلاً: ۱۰" min="1" max="100">
+                </div>
+                <div>
+                    <label class="field-label">مدت زمان آزمون (دقیقه)</label>
+                    <input type="number" id="f_duration" placeholder="مثلاً: ۴۰" min="1">
+                </div>
+            </div>
+
+            <label class="field-label">تعداد دفعات مجاز شرکت در آزمون</label>
+            <div class="toggle-group">
+                <div class="toggle-btn selected" data-val="once" onclick="selectAttempts('once')">فقط یک بار</div>
+                <div class="toggle-btn" data-val="multiple" onclick="selectAttempts('multiple')">چند بار</div>
+            </div>
+            <p class="hint">در حالت «یک بار»، هر دانش‌آموز و هر دستگاه فقط یک‌ بار می‌تواند آزمون را کامل کند.</p>
+
+            <label class="field-label">نمایش درستی / نادرستی گزینه به دانش‌آموز</label>
+            <div class="toggle-group">
+                <div class="toggle-btn selected" data-val="yes" onclick="selectShowCorrect('yes')">نمایش داده شود</div>
+                <div class="toggle-btn" data-val="no" onclick="selectShowCorrect('no')">نمایش داده نشود</div>
+            </div>
+
+            <div class="btn-row">
+                <span></span>
+                <button class="btn" onclick="goStep2()">مرحله بعد ➡</button>
+            </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="panel" id="panel2">
+            <h2 class="panel-title">ورود سوالات</h2>
+            <p class="hint" style="margin-bottom:14px;">
+                هر سوال را در یک کادر، طبق این الگو وارد کنید (سطر اول: متن سوال، ۴ سطر بعد: گزینه‌ها):<br>
+                کدام مورد نمونه‌ای از تغییر شیمیایی است؟<br>
+                الف) ذوب شدن یخ<br>
+                ب) خرد شدن چوب<br>
+                ج) زنگ زدن آهن<br>
+                د) تبخیر آب
+            </p>
+            <div id="questionsContainer"></div>
+            <div class="btn-row">
+                <button class="btn secondary" onclick="goStep(1)">⬅ قبلی</button>
+                <button class="btn" onclick="goStep3()">مرحله بعد ➡</button>
+            </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="panel" id="panel3">
+            <h2 class="panel-title">پیش‌نمایش، تعیین پاسخ صحیح و بارم</h2>
+            <div class="warn-total" id="scoreWarn"></div>
+            <div id="previewContainer" style="margin-top:14px;"></div>
+            <div class="btn-row">
+                <button class="btn secondary" onclick="goStep(2)">⬅ قبلی</button>
+                <button class="btn" onclick="goStep4()">مرحله بعد ➡</button>
+            </div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="panel" id="panel4">
+            <h2 class="panel-title">دریافت خروجی آزمون</h2>
+            <div class="summary-box" id="finalSummary"></div>
+            <div class="btn-row">
+                <button class="btn secondary" onclick="goStep(3)">⬅ قبلی</button>
+                <button class="btn" onclick="downloadExam()">⬇ دریافت خروجی HTML</button>
+            </div>
+        </div>
+    </div>
+    <div class="footer-tag">آزمون‌ساز، کاری از گروه علوم تجربی استان آذربایجان شرقی
+ـ طراح: سما‌بنا‌آذرپناه، دبیر علوم‌تجربی ناحیه ۳ تبریز
+</div>
+</div>
+
+<script>
+let state = {
+    topic:'', lesson:'', designer:'', desc:'', totalScore:20, count:0, duration:40,
+    attempts:'once', showCorrect:'yes',
+    questions: [] // {question, options:[4], correctIndex, score}
+};
+
+function showError(msg){
+    const el = document.getElementById('globalError');
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(()=>{ el.style.display='none'; }, 4500);
+}
+
+function goStep(n){
+    for(let i=1;i<=4;i++){
+        document.getElementById('panel'+i).classList.toggle('active', i===n);
+        const dot = document.getElementById('dot'+i);
+        dot.classList.toggle('active', i===n);
+        dot.classList.toggle('done', i<n);
+    }
+    window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function selectAttempts(val){
+    state.attempts = val;
+    document.querySelectorAll('.toggle-group')[0].querySelectorAll('.toggle-btn').forEach(b=>{
+        b.classList.toggle('selected', b.dataset.val === val);
+    });
+}
+function selectShowCorrect(val){
+    state.showCorrect = val;
+    document.querySelectorAll('.toggle-group')[1].querySelectorAll('.toggle-btn').forEach(b=>{
+        b.classList.toggle('selected', b.dataset.val === val);
+    });
+}
+
+// ---------- STEP 1 -> 2 ----------
+function goStep2(){
+    state.topic = document.getElementById('f_topic').value.trim();
+    state.lesson = document.getElementById('f_lesson').value.trim();
+    state.designer = document.getElementById('f_designer').value.trim();
+    state.desc = document.getElementById('f_desc').value.trim();
+    state.totalScore = parseFloat(document.getElementById('f_totalScore').value) || 20;
+    state.count = parseInt(document.getElementById('f_count').value);
+    state.duration = parseInt(document.getElementById('f_duration').value);
+
+    if(!state.topic || !state.lesson || !state.designer){
+        showError('لطفاً موضوع، عنوان درس و نام طراح را وارد کنید.');
+        return;
+    }
+    if(!state.count || state.count < 1){
+        showError('لطفاً تعداد سوالات معتبر وارد کنید.');
+        return;
+    }
+    if(!state.duration || state.duration < 1){
+        showError('لطفاً مدت زمان آزمون را وارد کنید.');
+        return;
+    }
+
+    buildQuestionInputs();
+    goStep(2);
+}
+
+function buildQuestionInputs(){
+    const container = document.getElementById('questionsContainer');
+    container.innerHTML = '';
+    const existing = state.questions;
+    for(let i=0;i<state.count;i++){
+        const div = document.createElement('div');
+        div.className = 'qcard';
+        const prevRaw = (existing[i] && existing[i].raw) ? existing[i].raw : '';
+        div.innerHTML =
+            '<div class="qtitle">سوال ' + toFa(i+1) + '</div>' +
+            '<textarea id="qraw_' + i + '" placeholder="متن سوال...\nالف) ...\nب) ...\nج) ...\nد) ...">' + escapeHtml(prevRaw) + '</textarea>' +
+            '<div class="err" id="qerr_' + i + '">این سوال باید شامل متن سوال و دقیقاً ۴ گزینه (الف، ب، ج، د) باشد.</div>';
+        container.appendChild(div);
+    }
+}
+
+function toFa(n){
+    const map = {0:'۰',1:'۱',2:'۲',3:'۳',4:'۴',5:'۵',6:'۶',7:'۷',8:'۸',9:'۹'};
+    return String(n).split('').map(ch => map[ch] !== undefined ? map[ch] : ch).join('');
+}
+function escapeHtml(s){
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ---------- STEP 2 -> 3 ----------
+function parseQuestionRaw(raw){
+    const lines = raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+    if(lines.length < 5) return null;
+    const question = lines[0];
+    const optLabelRe = /^(الف|ب|ج|د)\s*[)\.\-:）]\s*/;
+    const options = lines.slice(1,5).map(l => l.replace(optLabelRe,'').trim());
+    if(options.some(o => !o)) return null;
+    return { question, options };
+}
+
+function goStep3(){
+    let hasError = false;
+    const parsed = [];
+    for(let i=0;i<state.count;i++){
+        const ta = document.getElementById('qraw_'+i);
+        const raw = ta.value.trim();
+        const errEl = document.getElementById('qerr_'+i);
+        const result = parseQuestionRaw(raw);
+        if(!result){
+            errEl.style.display = 'block';
+            hasError = true;
+            parsed.push(null);
+        } else {
+            errEl.style.display = 'none';
+            parsed.push({ raw, question: result.question, options: result.options });
+        }
+    }
+    if(hasError){
+        showError('لطفاً سوالاتی که به رنگ قرمز مشخص شده‌اند را تکمیل کنید (متن سوال + ۴ گزینه).');
+        return;
+    }
+
+    const defaultScore = Math.round((state.totalScore / state.count) * 100) / 100;
+    state.questions = parsed.map((p, idx) => {
+        const prev = state.questions[idx];
+        return {
+            raw: p.raw,
+            question: p.question,
+            options: p.options,
+            correctIndex: (prev && prev.correctIndex !== undefined && prev.question === p.question) ? prev.correctIndex : null,
+            score: (prev && prev.question === p.question) ? prev.score : defaultScore
+        };
+    });
+
+    renderPreview();
+    goStep(3);
+}
+
+function renderPreview(){
+    const container = document.getElementById('previewContainer');
+    container.innerHTML = '';
+    const labels = ['الف','ب','ج','د'];
+
+    state.questions.forEach((q, qi) => {
+        const card = document.createElement('div');
+        card.className = 'preview-card';
+
+        let optsHtml = '';
+        q.options.forEach((opt, oi) => {
+            const checked = q.correctIndex === oi ? 'checked' : '';
+            const cls = q.correctIndex === oi ? 'preview-opt correct-selected' : 'preview-opt';
+            optsHtml += '<label class="' + cls + '" id="opt_' + qi + '_' + oi + '">' +
+                '<input type="radio" name="correct_' + qi + '" ' + checked + ' onchange="markCorrect(' + qi + ',' + oi + ')">' +
+                '<span><b>' + labels[oi] + ')</b> ' + escapeHtml(opt) + '</span></label>';
+        });
+
+        card.innerHTML =
+            '<div class="qnum">سوال ' + toFa(qi+1) + ' از ' + toFa(state.count) + '</div>' +
+            '<div class="qtext">' + escapeHtml(q.question) + '</div>' +
+            '<div>' + optsHtml + '</div>' +
+            '<div class="score-row"><label>بارم این سوال:</label><input type="number" min="0" step="0.25" value="' + q.score + '" onchange="setScore(' + qi + ', this.value)"></div>';
+
+        container.appendChild(card);
+    });
+
+    updateScoreWarn();
+}
+
+function markCorrect(qi, oi){
+    state.questions[qi].correctIndex = oi;
+    document.querySelectorAll('[id^="opt_' + qi + '_"]').forEach(el => el.classList.remove('correct-selected'));
+    document.getElementById('opt_' + qi + '_' + oi).classList.add('correct-selected');
+}
+
+function setScore(qi, val){
+    state.questions[qi].score = parseFloat(val) || 0;
+    updateScoreWarn();
+}
+
+function updateScoreWarn(){
+    const sum = state.questions.reduce((a,q) => a + (q.score||0), 0);
+    const el = document.getElementById('scoreWarn');
+    const sumRounded = Math.round(sum * 100) / 100;
+    if(Math.abs(sum - state.totalScore) < 0.01){
+        el.className = 'warn-total ok';
+        el.textContent = '✔ مجموع بارم سوالات (' + sumRounded + ') با نمره کل آزمون (' + state.totalScore + ') برابر است.';
+    } else {
+        el.className = 'warn-total bad';
+        el.textContent = '⚠ مجموع بارم سوالات فعلاً ' + sumRounded + ' است، درحالی‌که نمره کل آزمون ' + state.totalScore + ' تعیین شده. نمره نهایی بر اساس مجموع بارم‌ها محاسبه می‌شود.';
+    }
+}
+
+// ---------- STEP 3 -> 4 ----------
+function goStep4(){
+    const missing = state.questions.some(q => q.correctIndex === null || q.correctIndex === undefined);
+    if(missing){
+        showError('لطفاً برای همه سوالات، گزینه صحیح را مشخص کنید.');
+        return;
+    }
+    const totalPoints = Math.round(state.questions.reduce((a,q) => a + (q.score||0), 0) * 100) / 100;
+    const box = document.getElementById('finalSummary');
+    box.innerHTML =
+        '<div><b>موضوع:</b> ' + escapeHtml(state.topic) + '</div>' +
+        '<div><b>درس:</b> ' + escapeHtml(state.lesson) + '</div>' +
+        '<div><b>طراح:</b> ' + escapeHtml(state.designer) + '</div>' +
+        '<div><b>تعداد سوالات:</b> ' + toFa(state.count) + '</div>' +
+        '<div><b>مجموع بارم:</b> ' + totalPoints + '</div>' +
+        '<div><b>مدت زمان:</b> ' + toFa(state.duration) + ' دقیقه</div>' +
+        '<div><b>دفعات مجاز شرکت:</b> ' + (state.attempts==='once' ? 'فقط یک بار' : 'چند بار') + '</div>' +
+        '<div><b>نمایش درست/نادرست:</b> ' + (state.showCorrect==='yes' ? 'نمایش داده می‌شود' : 'نمایش داده نمی‌شود') + '</div>';
+    goStep(4);
+}
+
+// ---------- BUILD & DOWNLOAD EXAM ----------
+function buildExamHTML(){
+    const labels = ['الف','ب','ج','د'];
+    const qData = state.questions.map(q => ({
+        question: q.question,
+        options: q.options,
+        correctIndex: q.correctIndex,
+        score: q.score
+    }));
+    const totalPoints = Math.round(qData.reduce((a,q)=>a+(q.score||0),0) * 100) / 100;
+    const showCorrect = state.showCorrect === 'yes';
+    const onceOnly = state.attempts === 'once';
+
+    const attemptsWarningText = onceOnly
+        ? 'هر دانش‌آموز فقط یک بار می‌تواند در این آزمون شرکت کند. از هر دستگاه نیز فقط یک بار می‌توان آزمون داد.'
+        : 'این آزمون را می‌توانید بیش از یک بار انجام دهید.';
+
+    const html = [];
+    html.push('<meta name=\'viewport\' content=\'width=device-width, initial-scale=1\'/><!DOCTYPE html>');
+    html.push('<html lang="fa" dir="rtl"><head><meta charset="UTF-8">');
+    html.push('<meta name="viewport" content="width=device-width, initial-scale=1.0">');
+    html.push('<title>' + escapeHtml(state.topic) + '</title>');
+    html.push('<style>');
+    html.push('*{margin:0;padding:0;box-sizing:border-box;}');
+    html.push('body{font-family:\'Segoe UI\',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;}');
+    html.push('.container{background:rgba(255,255,255,.95);border-radius:30px;padding:30px;max-width:800px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.5);}');
+    html.push('.logo-badge{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#e94560,#0f3460);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;box-shadow:0 6px 18px rgba(233,69,96,.4);}');
+    html.push('.login-page{text-align:center;}');
+    html.push('.login-page h1{font-size:24px;color:#1a1a2e;margin-bottom:6px;background:linear-gradient(135deg,#e94560,#0f3460);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}');
+    html.push('.login-page h2{color:#0f3460;font-size:17px;margin-bottom:16px;font-weight:600;}');
+    html.push('.info-box{background:linear-gradient(135deg,#fce4ec,#e8eaf6);border-radius:15px;padding:15px 20px;margin:15px 0;border-right:5px solid #e94560;text-align:right;}');
+    html.push('.info-box p{margin:5px 0;font-size:15px;color:#333;}');
+    html.push('.info-box .highlight{color:#e94560;font-weight:bold;}');
+    html.push('.warning{background:#fff3cd;border:2px solid #ffc107;border-radius:10px;padding:12px;margin:15px 0;font-size:14.5px;color:#856404;font-weight:bold;text-align:right;}');
+    html.push('input{width:100%;padding:14px 18px;margin:8px 0;border:2px solid #ddd;border-radius:12px;font-size:16px;background:#f9f9f9;text-align:right;}');
+    html.push('input:focus{border-color:#e94560;outline:none;background:#fff;}');
+    html.push('.btn{width:100%;padding:14px;background:linear-gradient(135deg,#e94560,#0f3460);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;margin-top:10px;}');
+    html.push('.btn:hover{transform:translateY(-2px);}');
+    html.push('.error-msg{color:#e94560;background:#fce4ec;padding:10px;border-radius:8px;margin:10px 0;font-weight:bold;display:none;}');
+    html.push('.exam-page{display:none;}');
+    html.push('.exam-header{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,#1a1a2e,#0f3460);color:#fff;padding:15px 20px;border-radius:15px;margin-bottom:20px;flex-wrap:wrap;gap:10px;}');
+    html.push('.exam-header .student-info{font-size:14px;opacity:.9;}');
+    html.push('.exam-header .timer{background:#e94560;padding:8px 20px;border-radius:25px;font-size:20px;font-weight:bold;letter-spacing:2px;}');
+    html.push('.exam-header .timer.warning{background:#ffc107;color:#333;}');
+    html.push('.exam-header .timer.danger{background:#dc3545;animation:pulse 1s infinite;}');
+    html.push('@keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.05);}100%{transform:scale(1);}}');
+    html.push('.progress-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;}');
+    html.push('.progress-dot{width:30px;height:30px;border-radius:50%;background:#eee;color:#888;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;cursor:pointer;}');
+    html.push('.progress-dot.active{background:#0f3460;color:#fff;}');
+    html.push('.progress-dot.answered{background:#a5d6a7;color:#1b5e20;}');
+    html.push('.progress-dot.answered-wrong{background:#ef9a9a;color:#b71c1c;}');
+    html.push('.progress-dot.answered-neutral{background:#90caf9;color:#0d47a1;}');
+    html.push('.question-card{background:#fff;border-radius:20px;padding:25px;box-shadow:0 5px 20px rgba(0,0,0,.08);margin-bottom:20px;border:1px solid #eee;}');
+    html.push('.question-card .q-number{display:inline-block;background:linear-gradient(135deg,#e94560,#0f3460);color:#fff;padding:5px 15px;border-radius:20px;font-size:14px;margin-bottom:15px;}');
+    html.push('.question-card .q-text{font-size:18px;font-weight:600;color:#1a1a2e;margin-bottom:20px;line-height:1.7;}');
+    html.push('.options{display:grid;gap:12px;}');
+    html.push('.option{display:flex;align-items:center;padding:12px 18px;border:2px solid #e0e0e0;border-radius:12px;cursor:pointer;font-size:16px;background:#fafafa;}');
+    html.push('.option:hover{border-color:#0f3460;background:#e8eaf6;}');
+    html.push('.option .label{font-weight:bold;margin-left:10px;}');
+    html.push('.option.selected-neutral{border-color:#0f3460;background:#e8eaf6;}');
+    html.push('.option.correct{border-color:#2e7d32;background:#e8f5e9;}');
+    html.push('.option.wrong{border-color:#c62828;background:#ffebee;}');
+    html.push('.option.disabled{cursor:default;}');
+    html.push('.nav-buttons{display:flex;justify-content:space-between;gap:10px;}');
+    html.push('.nav-buttons button{padding:12px 26px;border:none;border-radius:12px;font-size:15px;font-weight:bold;cursor:pointer;background:#eee;color:#333;}');
+    html.push('.btn-next,.btn-prev{background:linear-gradient(135deg,#e94560,#0f3460)!important;color:#fff!important;}');
+    html.push('.btn-submit{width:100%;padding:14px 40px;background:linear-gradient(135deg,#2e7d32,#1b5e20);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;}');
+    html.push('.result-page{display:none;text-align:center;}');
+    html.push('.result-page h2{color:#1a1a2e;margin-bottom:20px;}');
+    html.push('.result-card{background:linear-gradient(135deg,#fce4ec,#e8eaf6);border-radius:20px;padding:30px;margin-bottom:20px;}');
+    html.push('.result-card .score{font-size:46px;font-weight:bold;color:#e94560;display:block;margin-bottom:10px;}');
+    html.push('.result-card .detail{font-size:15px;color:#333;margin:6px 0;}');
+    html.push('.result-card .message{margin-top:16px;padding:14px;border-radius:12px;font-size:15px;font-weight:bold;}');
+    html.push('.message.excellent{background:#e8f5e9;color:#1b5e20;}');
+    html.push('.message.good{background:#e3f2fd;color:#0d47a1;}');
+    html.push('.message.average{background:#fff3cd;color:#856404;}');
+    html.push('.message.poor{background:#fce4ec;color:#b71c1c;}');
+    html.push('.btn-restart{padding:14px 40px;background:linear-gradient(135deg,#e94560,#0f3460);color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;}');
+    html.push('.footer-note{text-align:center;margin-top:20px;color:#666;font-size:12.5px;border-top:1px solid #eee;padding-top:15px;}');
+    html.push('@media (max-width:600px){.container{padding:15px;}.exam-header{flex-direction:column;text-align:center;}.question-card .q-text{font-size:16px;}.option{font-size:14px;padding:10px 12px;}}');
+    html.push('</style></head><body>');
+    html.push('<div class="container" id="app">');
+
+    // login page
+    html.push('<div id="loginPage" class="login-page">');
+    html.push('<div class="logo-badge">🔬</div>');
+    html.push('<h1>📚 ' + escapeHtml(state.topic) + '</h1>');
+    html.push('<h2>' + escapeHtml(state.lesson) + '</h2>');
+    html.push('<div class="info-box">');
+    html.push('<p>👩‍🏫 <strong>طراح آزمون:</strong> <span class="highlight">' + escapeHtml(state.designer) + '</span></p>');
+    if(state.desc){ html.push('<p>📝 ' + escapeHtml(state.desc) + '</p>'); }
+    html.push('</div>');
+    html.push('<div class="warning">⚠️ <strong>توجه مهم:</strong> ' + attemptsWarningText + '<br>⏱ زمان آزمون: <strong>' + toFa(state.duration) + ' دقیقه</strong><br>🧮 نمره کل آزمون: <strong>' + totalPoints + '</strong></div>');
+    html.push('<div id="errorMsg" class="error-msg"></div>');
+    html.push('<input type="text" id="firstName" placeholder="نام" autocomplete="off">');
+    html.push('<input type="text" id="lastName" placeholder="نام خانوادگی" autocomplete="off">');
+    html.push('<input type="text" id="classNumber" placeholder="شماره کلاس" autocomplete="off">');
+    html.push('<button class="btn" onclick="startExam()">🚀 شروع آزمون</button>');
+    html.push('</div>');
+
+    // exam page
+    html.push('<div id="examPage" class="exam-page">');
+    html.push('<div class="exam-header"><div class="student-info">👤 <span id="studentNameDisplay"></span> | 📋 کلاس: <span id="studentClassDisplay"></span></div><div class="timer" id="timerDisplay"></div></div>');
+    html.push('<div class="progress-bar" id="progressBar"></div>');
+    html.push('<div class="question-card" id="questionCard"><div class="q-number" id="qNumber"></div><div class="q-text" id="qText"></div><div class="options" id="optionsContainer"></div></div>');
+    html.push('<div class="nav-buttons"><button class="btn-prev" onclick="prevQuestion()">⬅ قبلی</button><button class="btn-next" onclick="nextQuestion()">بعدی ➡</button></div>');
+    html.push('<button class="btn-submit" id="submitBtn" onclick="submitExam()" style="display:none;margin-top:15px;">✅ پایان آزمون و مشاهده نتیجه</button>');
+    html.push('<div class="footer-note">آزمون‌ساز، کاری از گروه علوم تجربی استان آذربایجان شرقی — طراح: سما بنا آذرپناه، دبیر علوم تجربی ناحیه ۳ تبریز</div>');
+    html.push('</div>');
+
+    // result page
+    html.push('<div id="resultPage" class="result-page">');
+    html.push('<h2>🎉 نتیجه آزمون شما</h2>');
+    html.push('<div class="result-card" id="resultCard">');
+    html.push('<span class="score" id="finalScore">۰</span>');
+    html.push('<div class="detail" id="studentDetail"></div>');
+    html.push('<div class="detail" id="detailText"></div>');
+    html.push('<div class="detail">📊 درصد: <strong id="percentText">۰%</strong></div>');
+    html.push('<div class="detail">⏱ زمان سپری‌شده: <strong id="timeSpent">۰ دقیقه</strong></div>');
+    html.push('<div class="message" id="messageText"></div>');
+    html.push('</div>');
+    html.push('<button class="btn-restart" onclick="resetExam()">🔄 بازگشت به صفحه ورود</button>');
+    html.push('<div class="footer-note">آزمون‌ساز، کاری از گروه علوم تجربی استان آذربایجان شرقی — طراح: سما بنا آذرپناه، دبیر علوم تجربی ناحیه ۳ تبریز</div>');
+    html.push('</div>');
+
+    html.push('</div>'); // container
+
+    // ---------- SCRIPT ----------
+    html.push('<script>');
+    html.push('var QUESTIONS = ' + JSON.stringify(qData) + ';');
+    html.push('var OPT_LABELS = ' + JSON.stringify(labels) + ';');
+    html.push('var TOTAL_POINTS = ' + totalPoints + ';');
+    html.push('var DURATION_SEC = ' + (state.duration * 60) + ';');
+    html.push('var SHOW_CORRECT = ' + showCorrect + ';');
+    html.push('var ONCE_ONLY = ' + onceOnly + ';');
+    html.push('var currentQuestionIndex = 0;');
+    html.push('var userAnswers = {};');
+    html.push('var timerInterval = null;');
+    html.push('var timeLeft = DURATION_SEC;');
+    html.push('var examFinished = false;');
+    html.push('var startTime = null;');
+    html.push('var studentFullName = "";');
+    html.push('var studentClass = "";');
+
+    html.push('function getDeviceId(){var d=localStorage.getItem("qz_device_id");if(!d){d="dev_"+Date.now()+"_"+Math.random().toString(36).substr(2,9);localStorage.setItem("qz_device_id",d);}return d;}');
+
+    html.push('function showError(msg){var el=document.getElementById("errorMsg");el.textContent=msg;el.style.display="block";setTimeout(function(){el.style.display="none";},5000);}');
+
+    html.push('function startExam(){');
+    html.push('  var firstName=document.getElementById("firstName").value.trim();');
+    html.push('  var lastName=document.getElementById("lastName").value.trim();');
+    html.push('  var classNumber=document.getElementById("classNumber").value.trim();');
+    html.push('  if(!firstName||!lastName||!classNumber){showError("لطفاً نام، نام خانوادگی و شماره کلاس خود را وارد کنید.");return;}');
+    html.push('  var studentKey=firstName+"_"+lastName+"_"+classNumber;');
+    html.push('  if(ONCE_ONLY){');
+    html.push('    var completed=JSON.parse(localStorage.getItem("qz_completed_students")||"[]");');
+    html.push('    if(completed.indexOf(studentKey)!==-1){showError("⚠️ این دانش‌آموز قبلاً در این آزمون شرکت کرده است.");return;}');
+    html.push('    var deviceUsed=localStorage.getItem("qz_device_used");');
+    html.push('    if(deviceUsed){showError("📱 از این دستگاه قبلاً برای شرکت در آزمون استفاده شده است.");return;}');
+    html.push('    localStorage.setItem("qz_student_key",studentKey);');
+    html.push('    localStorage.setItem("qz_device_used","yes");');
+    html.push('  }');
+    html.push('  studentFullName=firstName+" "+lastName;');
+    html.push('  studentClass=classNumber;');
+    html.push('  document.getElementById("loginPage").style.display="none";');
+    html.push('  document.getElementById("examPage").style.display="block";');
+    html.push('  document.getElementById("studentNameDisplay").textContent=studentFullName;');
+    html.push('  document.getElementById("studentClassDisplay").textContent=studentClass;');
+    html.push('  startTimer();');
+    html.push('  currentQuestionIndex=0;');
+    html.push('  renderQuestion();');
+    html.push('  renderProgressBar();');
+    html.push('  startTime=Date.now();');
+    html.push('}');
+
+    html.push('function startTimer(){');
+    html.push('  updateTimerDisplay();');
+    html.push('  timerInterval=setInterval(function(){');
+    html.push('    timeLeft--; updateTimerDisplay();');
+    html.push('    if(timeLeft<=0){clearInterval(timerInterval);alert("⏰ زمان شما به پایان رسید! آزمون به صورت خودکار ارسال می‌شود.");submitExam();}');
+    html.push('  },1000);');
+    html.push('}');
+    html.push('function pad2(n){n=Math.floor(n);return (n<10?"0":"")+n;}');
+    html.push('function updateTimerDisplay(){');
+    html.push('  var m=Math.floor(timeLeft/60), s=timeLeft%60;');
+    html.push('  var display=document.getElementById("timerDisplay");');
+    html.push('  display.textContent=pad2(m)+":"+pad2(s);');
+    html.push('  display.className="timer";');
+    html.push('  if(timeLeft<300){display.classList.add("danger");} else if(timeLeft<600){display.classList.add("warning");}');
+    html.push('}');
+
+    html.push('function renderQuestion(){');
+    html.push('  var q=QUESTIONS[currentQuestionIndex];');
+    html.push('  document.getElementById("qNumber").textContent="سوال "+(currentQuestionIndex+1)+" از "+QUESTIONS.length;');
+    html.push('  document.getElementById("qText").textContent=q.question;');
+    html.push('  var container=document.getElementById("optionsContainer");');
+    html.push('  container.innerHTML="";');
+    html.push('  var userAnswer=userAnswers[currentQuestionIndex];');
+    html.push('  q.options.forEach(function(opt,idx){');
+    html.push('    var div=document.createElement("div");');
+    html.push('    div.className="option";');
+    html.push('    if(userAnswer!==undefined){');
+    html.push('      div.classList.add("disabled");');
+    html.push('      if(SHOW_CORRECT){');
+    html.push('        if(idx===q.correctIndex){div.classList.add("correct");}');
+    html.push('        else if(idx===userAnswer){div.classList.add("wrong");}');
+    html.push('      } else if(idx===userAnswer){div.classList.add("selected-neutral");}');
+    html.push('    }');
+    html.push('    div.innerHTML="<span class=\\"label\\">"+OPT_LABELS[idx]+")</span> "+opt;');
+    html.push('    div.dataset.idx=idx;');
+    html.push('    if(userAnswer===undefined){div.onclick=function(){selectOption(this);};}');
+    html.push('    container.appendChild(div);');
+    html.push('  });');
+    html.push('  var submitBtn=document.getElementById("submitBtn");');
+    html.push('  var allAnswered=Object.keys(userAnswers).length===QUESTIONS.length;');
+    html.push('  submitBtn.style.display=allAnswered?"block":"none";');
+    html.push('  document.querySelector(".btn-prev").style.visibility=currentQuestionIndex===0?"hidden":"visible";');
+    html.push('  document.querySelector(".btn-next").style.display=currentQuestionIndex===QUESTIONS.length-1?"none":"block";');
+    html.push('}');
+
+    html.push('function selectOption(el){');
+    html.push('  var idx=parseInt(el.dataset.idx);');
+    html.push('  userAnswers[currentQuestionIndex]=idx;');
+    html.push('  renderProgressBar();');
+    html.push('  renderQuestion();');
+    html.push('}');
+
+    html.push('function renderProgressBar(){');
+    html.push('  var bar=document.getElementById("progressBar");');
+    html.push('  bar.innerHTML="";');
+    html.push('  for(var i=0;i<QUESTIONS.length;i++){');
+    html.push('    var dot=document.createElement("div");');
+    html.push('    dot.className="progress-dot";');
+    html.push('    dot.textContent=i+1;');
+    html.push('    if(i===currentQuestionIndex){dot.classList.add("active");}');
+    html.push('    if(userAnswers[i]!==undefined){');
+    html.push('      if(SHOW_CORRECT){');
+    html.push('        var ok=userAnswers[i]===QUESTIONS[i].correctIndex;');
+    html.push('        dot.classList.add(ok?"answered":"answered-wrong");');
+    html.push('      } else { dot.classList.add("answered-neutral"); }');
+    html.push('    }');
+    html.push('    (function(idx){dot.onclick=function(){goToQuestion(idx);};})(i);');
+    html.push('    bar.appendChild(dot);');
+    html.push('  }');
+    html.push('}');
+
+    html.push('function goToQuestion(index){if(index>=0&&index<QUESTIONS.length){currentQuestionIndex=index;renderQuestion();renderProgressBar();}}');
+    html.push('function nextQuestion(){if(currentQuestionIndex<QUESTIONS.length-1){currentQuestionIndex++;renderQuestion();renderProgressBar();}}');
+    html.push('function prevQuestion(){if(currentQuestionIndex>0){currentQuestionIndex--;renderQuestion();renderProgressBar();}}');
+
+    html.push('function submitExam(){');
+    html.push('  if(examFinished)return;');
+    html.push('  examFinished=true;');
+    html.push('  clearInterval(timerInterval);');
+    html.push('  var earned=0, correctCount=0;');
+    html.push('  for(var i=0;i<QUESTIONS.length;i++){');
+    html.push('    if(userAnswers[i]===QUESTIONS[i].correctIndex){earned+=QUESTIONS[i].score;correctCount++;}');
+    html.push('  }');
+    html.push('  earned=Math.round(earned*100)/100;');
+    html.push('  var percent=TOTAL_POINTS>0?(earned/TOTAL_POINTS)*100:0;');
+    html.push('  var endTime=Date.now();');
+    html.push('  var elapsedMinutes=Math.floor((endTime-startTime)/60000);');
+    html.push('  document.getElementById("examPage").style.display="none";');
+    html.push('  document.getElementById("resultPage").style.display="block";');
+    html.push('  document.getElementById("studentDetail").textContent="👤 "+studentFullName+" | کلاس: "+studentClass;');
+    html.push('  document.getElementById("finalScore").textContent=earned+" از "+TOTAL_POINTS;');
+    html.push('  document.getElementById("detailText").textContent=correctCount+" پاسخ درست از "+QUESTIONS.length+" سوال";');
+    html.push('  document.getElementById("percentText").textContent=percent.toFixed(1)+"%";');
+    html.push('  document.getElementById("timeSpent").textContent=elapsedMinutes+" دقیقه";');
+    html.push('  var messageEl=document.getElementById("messageText");');
+    html.push('  if(percent>=90){messageEl.textContent="🎉 عالی! تو یک ستاره‌ای! این نتیجه نشان‌دهنده تسلط کامل شماست.";messageEl.className="message excellent";}');
+    html.push('  else if(percent>=70){messageEl.textContent="👏 خیلی خوب! تقریباً به تسلط رسیده‌ای. با کمی مرور می‌توانی نمره کامل بگیری.";messageEl.className="message good";}');
+    html.push('  else if(percent>=50){messageEl.textContent="👍 خوب است، اما جا برای پیشرفت داری! یک بار دیگر درس را مرور کن.";messageEl.className="message average";}');
+    html.push('  else {messageEl.textContent="📚 نیاز به تلاش بیشتر داری! درس را با دقت دوباره بخوان و تلاش کن.";messageEl.className="message poor";}');
+    html.push('  if(ONCE_ONLY){');
+    html.push('    var studentKey=localStorage.getItem("qz_student_key");');
+    html.push('    if(studentKey){');
+    html.push('      var completed=JSON.parse(localStorage.getItem("qz_completed_students")||"[]");');
+    html.push('      if(completed.indexOf(studentKey)===-1){completed.push(studentKey);localStorage.setItem("qz_completed_students",JSON.stringify(completed));}');
+    html.push('    }');
+    html.push('  }');
+    html.push('}');
+
+    html.push('function resetExam(){');
+    html.push('  currentQuestionIndex=0; userAnswers={}; timeLeft=DURATION_SEC; examFinished=false; startTime=null;');
+    html.push('  clearInterval(timerInterval);');
+    html.push('  document.getElementById("resultPage").style.display="none";');
+    html.push('  document.getElementById("loginPage").style.display="block";');
+    html.push('  document.getElementById("examPage").style.display="none";');
+    html.push('  document.getElementById("firstName").value="";');
+    html.push('  document.getElementById("lastName").value="";');
+    html.push('  document.getElementById("classNumber").value="";');
+    html.push('  document.getElementById("errorMsg").style.display="none";');
+    html.push('}');
+    html.push('</'+'script>');
+    html.push('</body></html>');
+
+    return html.join('\n');
+}
+
+function downloadExam(){
+    const html = buildExamHTML();
+    const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const safeName = (state.topic || 'آزمون').replace(/[\\/:*?"<>|]/g,'').trim() || 'آزمون';
+    a.href = url;
+    a.download = safeName + '.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
